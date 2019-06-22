@@ -1,24 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import geolocator from 'geolocator';
 
 function App() {
+  const [location, setLocation] = useState();
+  useEffect(() => {
+    if (!location && geolocator.isGeolocationSupported()) {
+      geolocator.locate({ fallbackToIP: true }, (error, location) => {
+        if (!error)
+          setLocation(location);
+      });
+    }
+  }, [location]);
+  const [places, setPlaces] = useState();
+  useEffect(() => {
+    if (!places && location) {
+      const { coords } = location;
+      fetch(`/api/places/busStops?latitude=${encodeURIComponent(coords.latitude)}&longitude=${encodeURIComponent(coords.longitude)}`)
+        .then(response => response.json())
+        .catch(error => console.error('Error:', error))
+        .then(response => setPlaces(response));
+    }
+  }, [places, location]);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {places ?
+        places.member.map(member => (
+          <p>{member.atcocode}</p>
+        ))
+        : <React.Fragment />}
     </div>
   );
 }
