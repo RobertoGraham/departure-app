@@ -1,8 +1,9 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { Store } from './Store';
 import BusStopListItem from './BusStopListItem';
 
 function BusStopList() {
+    const [fetchingPlaces, setFetchingPlaces] = useState(false);
     const [{ location, places }, dispatch] = useContext(Store);
 
     useEffect(() => {
@@ -10,15 +11,17 @@ function BusStopList() {
             const { coords } = location;
             const data = await fetch(`/api/places/busStops?latitude=${encodeURIComponent(coords.latitude)}&longitude=${encodeURIComponent(coords.longitude)}`);
             const dataJson = await data.json();
-            return dispatch({
+            dispatch({
                 type: 'RECEIVED_PLACES',
                 payload: dataJson
-            });
+            })
         }
 
-        if (!places && location)
+        if (!places && location && !fetchingPlaces) {
+            setFetchingPlaces(true);
             fetchPlaces();
-    }, [location, places, dispatch]);
+        }
+    }, [location, places, dispatch, fetchingPlaces]);
 
     return (
         <React.Fragment>

@@ -1,8 +1,8 @@
 import React from 'react';
 
-function BusStopListItem({ atcocode }) {
+function BusStopListItem({ name }) {
     return (
-        <p>{atcocode}</p>
+        <p>{name}</p>
     );
 }
 

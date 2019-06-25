@@ -1,21 +1,28 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import './App.css';
 import { Store } from './Store';
 import geolocator from 'geolocator';
 const BusStopList = React.lazy(() => import('./BusStopList'));
 
 function App() {
+  const [fetchingLocation, setFetchingLocation] = useState(false);
   const [{ location }, dispatch] = useContext(Store);
 
   useEffect(() => {
-    if (!location && geolocator.isGeolocationSupported())
+    function fetchLocation() {
       geolocator.locate({ fallbackToIP: true }, (error, location) => {
-        return dispatch({
+        dispatch({
           type: 'RECEIVED_LOCATION',
           payload: error ? null : location
-        });
+        })
       });
-  }, [location, dispatch]);
+    }
+
+    if (!location && geolocator.isGeolocationSupported() && !fetchingLocation) {
+      setFetchingLocation(true);
+      fetchLocation();
+    }
+  }, [location, fetchingLocation, dispatch]);
 
   return (
     <div className="App">
