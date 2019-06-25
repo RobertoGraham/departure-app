@@ -1,34 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import './App.css';
+import { Store } from './Store';
 import geolocator from 'geolocator';
+const BusStopList = React.lazy(() => import('./BusStopList'));
 
 function App() {
-  const [location, setLocation] = useState();
+  const [{ location }, dispatch] = useContext(Store);
+
   useEffect(() => {
-    if (!location && geolocator.isGeolocationSupported()) {
+    if (!location && geolocator.isGeolocationSupported())
       geolocator.locate({ fallbackToIP: true }, (error, location) => {
-        if (!error)
-          setLocation(location);
+        return dispatch({
+          type: 'RECEIVED_LOCATION',
+          payload: error ? null : location
+        });
       });
-    }
-  }, [location]);
-  const [places, setPlaces] = useState();
-  useEffect(() => {
-    if (!places && location) {
-      const { coords } = location;
-      fetch(`/api/places/busStops?latitude=${encodeURIComponent(coords.latitude)}&longitude=${encodeURIComponent(coords.longitude)}`)
-        .then(response => response.json())
-        .catch(error => console.error('Error:', error))
-        .then(response => setPlaces(response));
-    }
-  }, [places, location]);
+  }, [location, dispatch]);
+
   return (
     <div className="App">
-      {places ?
-        places.member.map(member => (
-          <p>{member.atcocode}</p>
-        ))
-        : <React.Fragment />}
+      <React.Suspense fallback={<div>Loading...</div>}>
+        <BusStopList />
+      </React.Suspense>
     </div>
   );
 }
