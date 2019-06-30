@@ -4,7 +4,8 @@ export const Store = createContext();
 
 const initialState = {
     places: null,
-    location: null
+    location: null,
+    departures: {}
 };
 
 function reducer(state, action) {
@@ -13,6 +14,8 @@ function reducer(state, action) {
             return { ...state, places: action.payload };
         case 'RECEIVED_LOCATION':
             return { ...state, location: action.payload };
+        case 'RECEIVED_DEPARTURES':
+            return { ...state, departures: { ...state.departures, [action.payload.atcocode]: action.payload } }
         default:
             return state;
     }

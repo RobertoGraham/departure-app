@@ -1,5 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Store } from './Store';
+import { Grid, GridCell } from '@rmwc/grid';
+import '@material/layout-grid/dist/mdc.layout-grid.css';
 import BusStopListItem from './BusStopListItem';
 
 function BusStopList() {
@@ -24,13 +26,14 @@ function BusStopList() {
     }, [location, places, dispatch, fetchingPlaces]);
 
     return (
-        <React.Fragment>
+        <Grid align="left">
             {places && places.member ?
-                <div>
-                    {places.member.map(member => <BusStopListItem key={member.atcocode} {...member} />)}
-                </div>
+                places.member.map(member =>
+                    <GridCell span={4} align="top" key={member.atcocode}>
+                        <BusStopListItem {...member} />
+                    </GridCell>)
                 : <React.Fragment />}
-        </React.Fragment>
+        </Grid>
     )
 }
 
