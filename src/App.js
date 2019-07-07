@@ -10,25 +10,8 @@ import '@material/layout-grid/dist/mdc.layout-grid.css';
 function App() {
   return (
     <Switch>
-      <Route exact path="/" render={() => <Grid align="left">
-        <GridCell span={12}>
-          <Typography
-            use="headline6"
-            tag={Link}
-            to="/busStops"
-            theme="textPrimaryOnBackground"
-            style={{
-              margin: '0',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis'
-            }}>
-            Stops
-          </Typography>
-        </GridCell>
-      </Grid>} />
-      <Route exact path="/busStops" component={BusStopList} />
-      <Route exact path="/busStops/:id/departures" component={DeparturesBoard} />
+      <Route exact path="/" component={BusStopList} />
+      <Route exact path="/:id/departures" component={DeparturesBoard} />
       <Route render={() => <Grid align="left">
         <GridCell phone={4} tablet={8} desktop={12}>
           <Typography

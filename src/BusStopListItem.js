@@ -12,7 +12,7 @@ function BusStopListItem({ id, name, locality }) {
         <Card>
             <CardPrimaryAction
                 tag={Link}
-                to={`/busStops/${id}/departures`}>
+                to={`/${id}/departures`}>
                 <div style={{ padding: '0 1rem' }}>
                     <Typography
                         use="headline6"
