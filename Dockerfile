@@ -1,20 +1,20 @@
-ARG BUILD_DIR=/usr/src/app
+ARG SOURCES_DIR=/src
 
-FROM node:10.16.0-alpine
-ARG BUILD_DIR
-WORKDIR $BUILD_DIR
+FROM node:10.16.0-alpine AS builder
+ARG SOURCES_DIR
+WORKDIR $SOURCES_DIR
 COPY package.json .
 RUN npm install
-COPY src src
-COPY public public
+COPY src ./src
+COPY public ./public
 RUN npm run build
 
 FROM httpd:2.4.39-alpine
-ARG BUILD_DIR
+ARG SOURCES_DIR
 ENV BUS_API_URL=http://host.docker.internal:8080
 ENV PORT=80
 WORKDIR /usr/local/apache2
-COPY --from=0 $BUILD_DIR/build htdocs
+COPY --from=builder $SOURCES_DIR/build htdocs
 RUN sed -i 's,#\(LoadModule rewrite_module modules/mod_rewrite.so\),\1,g' conf/httpd.conf \
   && sed -i -e '/<Directory "\/usr\/local\/apache2\/htdocs">/,/<\/Directory>/{s/AllowOverride None/AllowOverride All/}' conf/httpd.conf \
   && sed -i 's,#\(LoadModule proxy_module modules/mod_proxy.so\),\1,g' conf/httpd.conf \
