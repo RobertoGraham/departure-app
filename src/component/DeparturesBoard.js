@@ -1,27 +1,30 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Store } from './Store';
+import { StoreContext } from '../provider/StoreProvider';
 import { Typography } from '@rmwc/typography';
 import '@material/typography/dist/mdc.typography.css';
 
 function DeparturesBoard({ match }) {
     const [fetchingBusStopDepartures, setFetchingBusStopDepartures] = useState(false);
-    const [{ busStopDepartures, busStops }, dispatch] = useContext(Store);
+    const [{ busStopDepartures, busStops }, dispatch] = useContext(StoreContext);
     const { params } = match;
     const { id } = params;
 
     useEffect(() => {
-        async function fetchDepartures() {
+        const fetchDepartures = async () => {
             const data = await fetch(`/api/busStops/${id}/departures`);
-            const dataJson = await data.json();
+            return await data.json();
+        };
+
+        const receiveDepartures = (departures) => {
             dispatch({
                 type: 'RECEIVED_BUS_STOP_DEPARTURES',
-                payload: { busStopId: id, busStopDepartures: dataJson }
+                payload: { busStopId: id, busStopDepartures: departures }
             });
         }
 
         if (!busStopDepartures[id] && !fetchingBusStopDepartures) {
             setFetchingBusStopDepartures(true);
-            fetchDepartures();
+            fetchDepartures().then(receiveDepartures);
         }
     }, [busStopDepartures, dispatch, fetchingBusStopDepartures, id]);
 
@@ -29,6 +32,7 @@ function DeparturesBoard({ match }) {
     const departures = busStopDepartures[id];
     const titleText = busStop ? busStop.name : `No bus stop found with id: ${id}`;
     const subtitleText = busStop ? busStop.locality : '';
+
     return (
         <header style={{ padding: '0 1rem', textAlign: 'center' }}>
             <Typography

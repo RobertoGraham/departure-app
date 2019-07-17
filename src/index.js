@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import '@material/theme/dist/mdc.theme.css';
-import './index.css';
-import App from './App';
+import './css/index.css';
+import App from './component/App';
 import { ThemeProvider } from '@rmwc/theme';
-import { StoreProvider } from './Store';
+import { StoreProvider } from './provider/StoreProvider';
 import { BrowserRouter } from "react-router-dom";
 import * as serviceWorker from './serviceWorker';
 

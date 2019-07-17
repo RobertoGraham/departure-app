@@ -1,18 +1,31 @@
-import React, { useReducer, createContext } from 'react'
+import React, { useReducer, createContext, useState } from 'react'
 
-export const Store = createContext();
+export const StoreContext = createContext();
 
 const initialState = {
     busStops: [],
     location: null,
-    busStopDepartures: {}
+    busStopDepartures: {},
+    busStopsReceived: false,
+    fetchingBusStops: false
 };
 
 function reducer(state, action) {
     switch (action.type) {
-        case 'RECEIVED_BUS_STOPS':
-            return { ...state, busStops: action.payload };
-        case 'RECEIVED_LOCATION':
+        case 'FETCHING_BUS_STOPS':
+            return { ...state, fetchingBusStops: true };
+        case 'BUS_STOPS_RECEIVED':
+            const existingBusStopIds = state.busStops.map(busStop => busStop.id);
+            return {
+                ...state,
+                busStops: [
+                    ...action.payload.filter(busStop => !existingBusStopIds.includes(busStop.id)),
+                    ...state.busStops
+                ],
+                busStopsReceived: true,
+                fetchingBusStops: false
+            };
+        case 'SET_LOCATION':
             return { ...state, location: action.payload };
         case 'RECEIVED_BUS_STOP_DEPARTURES': {
             const { busStopId, busStopDepartures } = action.payload;
@@ -39,8 +52,8 @@ export function StoreProvider(props) {
     const value = useReducer(reducer, initialState);
 
     return (
-        <Store.Provider value={value}>
+        <StoreContext.Provider value={value}>
             {props.children}
-        </Store.Provider>
+        </StoreContext.Provider>
     );
 }
