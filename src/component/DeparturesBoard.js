@@ -72,8 +72,6 @@ function DeparturesBoard({ match }) {
     const titleText = busStop ? busStop.name : `No bus stop found with id: ${id}`;
     const subtitleText = busStop ? busStop.locality : '';
 
-    console.log(busStopDepartures);
-
     return (
         <header style={{ padding: '0 1rem', textAlign: 'center' }}>
             <Typography
