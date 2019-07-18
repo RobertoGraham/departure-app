@@ -1,37 +1,78 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { StoreContext } from '../provider/StoreProvider';
+import React, { useContext, useEffect } from 'react';
+import { BusStopDepartureContext } from '../provider/BusStopDepartureProvider';
 import { Typography } from '@rmwc/typography';
 import '@material/typography/dist/mdc.typography.css';
+import { BusStopContext } from '../provider/BusStopProvider';
 
 function DeparturesBoard({ match }) {
-    const [fetchingBusStopDepartures, setFetchingBusStopDepartures] = useState(false);
-    const [{ busStopDepartures, busStops }, dispatch] = useContext(StoreContext);
+    const [{ busStopDeparturesMap, fetchingBusStopDepartures }, dispatchBusStopDepartureAction] = useContext(BusStopDepartureContext);
     const { params } = match;
     const { id } = params;
+    const busStopDepartures = busStopDeparturesMap[id];
+    const [{ busStops }, dispatchBusStopAction] = useContext(BusStopContext);
 
     useEffect(() => {
-        const fetchDepartures = async () => {
-            const data = await fetch(`/api/busStops/${id}/departures`);
-            return await data.json();
+        const requestBusStopDeparturesAction = () => {
+            return {
+                type: 'BUS_STOP_DEPARTURES_REQUESTED'
+            };
         };
 
-        const receiveDepartures = (departures) => {
-            dispatch({
-                type: 'RECEIVED_BUS_STOP_DEPARTURES',
-                payload: { busStopId: id, busStopDepartures: departures }
-            });
-        }
+        const receiveBusStopDeparturesAction = ({ departures }) => {
+            return {
+                type: 'BUS_STOP_DEPARTURES_RECEIVED',
+                payload: { busStopId: id, departures }
+            };
+        };
 
-        if (!busStopDepartures[id] && !fetchingBusStopDepartures) {
-            setFetchingBusStopDepartures(true);
-            fetchDepartures().then(receiveDepartures);
-        }
-    }, [busStopDepartures, dispatch, fetchingBusStopDepartures, id]);
+        const receiveBusStopAction = ({ busStop }) => {
+            return {
+                type: 'BUS_STOP_RECEIVED',
+                payload: { busStop }
+            };
+        };
+
+        const errorFetchingBusStopDeparturesAction = () => {
+            return {
+                type: 'BUS_STOP_DEPARTURES_ERROR'
+            };
+        };
+
+        const shouldFetchBusStopDepartures = () => {
+            return !busStopDepartures
+                && !fetchingBusStopDepartures;
+        };
+
+        const fetchBusStopDepartures = async () => {
+            dispatchBusStopDepartureAction(requestBusStopDeparturesAction());
+            try {
+                const response = await fetch(`/api/busStops/${id}/departures`);
+                if (200 === response.status) {
+                    const busStopDepartures = await response.json();
+                    dispatchBusStopAction(receiveBusStopAction(busStopDepartures))
+                    dispatchBusStopDepartureAction(receiveBusStopDeparturesAction(busStopDepartures));
+                } else {
+                    dispatchBusStopDepartureAction(errorFetchingBusStopDeparturesAction());
+                }
+            } catch (error) {
+                dispatchBusStopDepartureAction(errorFetchingBusStopDeparturesAction());
+            }
+        };
+
+        const fetchBusStopDeparturesIfNeeded = () => {
+            if (shouldFetchBusStopDepartures()) {
+                fetchBusStopDepartures();
+            }
+        };
+
+        fetchBusStopDeparturesIfNeeded();
+    }, [busStopDepartures, fetchingBusStopDepartures, id, dispatchBusStopAction, dispatchBusStopDepartureAction]);
 
     const busStop = busStops.find(busStop => busStop.id === id);
-    const departures = busStopDepartures[id];
     const titleText = busStop ? busStop.name : `No bus stop found with id: ${id}`;
     const subtitleText = busStop ? busStop.locality : '';
+
+    console.log(busStopDepartures);
 
     return (
         <header style={{ padding: '0 1rem', textAlign: 'center' }}>

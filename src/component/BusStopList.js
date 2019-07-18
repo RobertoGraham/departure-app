@@ -1,48 +1,77 @@
 import React, { useEffect, useContext } from 'react';
-import { StoreContext } from '../provider/StoreProvider';
 import { Grid, GridCell } from '@rmwc/grid';
 import '@material/layout-grid/dist/mdc.layout-grid.css';
 import BusStopListItem from './BusStopListItem';
 import { geolocated } from "react-geolocated";
+import { LocationContext } from '../provider/LocationProvider';
+import { BusStopContext } from '../provider/BusStopProvider';
 
-function BusStopList({ coords, isGeolocationAvailable, isGeolocationEnabled, positionError }) {
-    const [{ location, busStops, busStopsReceived, fetchingBusStops }, dispatch] = useContext(StoreContext);
-
-    useEffect(() => {
-        if (coords) {
-            dispatch({
-                type: 'SET_LOCATION',
-                payload: { coords }
-            });
-        }
-    }, [coords, dispatch]);
+function BusStopList({ coords }) {
+    const [{ coordinates }, dispatchLocationAction] = useContext(LocationContext);
+    const [{ busStops, busStopsReceived, fetchingBusStops }, dispatchBusStopAction] = useContext(BusStopContext);
 
     useEffect(() => {
-        const setFetchingBusStops = () => {
+        const setLocationAction = (coords) => {
             return {
-                type: 'FETCHING_BUS_STOPS'
-            };
+                type: 'SET_LOCATION',
+                payload: coords
+            }
         }
 
-        const receiveBusStops = (busStops) => {
+        if (coords) {
+            dispatchLocationAction(setLocationAction(coords));
+        }
+    }, [coords, dispatchLocationAction]);
+
+    useEffect(() => {
+        const requestBusStopsAction = () => {
+            return {
+                type: 'BUS_STOPS_REQUESTED'
+            };
+        };
+
+        const receiveBusStopsAction = (busStops) => {
             return {
                 type: 'BUS_STOPS_RECEIVED',
                 payload: busStops
             };
         };
 
-        const fetchBusStops = async () => {
-            dispatch(setFetchingBusStops());
-            const { coords } = location;
-            const response = await fetch(`/api/busStops?latitude=${encodeURIComponent(coords.latitude)}&longitude=${encodeURIComponent(coords.longitude)}`);
-            const busStops = await response.json();
-            dispatch(receiveBusStops(busStops));
+        const errorFetchingBusStopsAction = () => {
+            return {
+                type: 'BUS_STOPS_ERROR'
+            };
         };
 
-        if (!busStopsReceived && location && !fetchingBusStops) {
-            fetchBusStops();
+        const shouldFetchBusStops = () => {
+            return !busStopsReceived
+                && coordinates
+                && !fetchingBusStops;
+        };
+
+        const fetchBusStops = async () => {
+            dispatchBusStopAction(requestBusStopsAction());
+            try {
+                const response = await fetch(`/api/busStops?latitude=${encodeURIComponent(coordinates.latitude)}&longitude=${encodeURIComponent(coordinates.longitude)}`);
+                if (200 === response.status) {
+                    const busStops = await response.json();
+                    dispatchBusStopAction(receiveBusStopsAction(busStops));
+                } else {
+                    dispatchBusStopAction(errorFetchingBusStopsAction());
+                }
+            } catch (error) {
+                dispatchBusStopAction(errorFetchingBusStopsAction());
+            }
         }
-    }, [location, busStops, dispatch, fetchingBusStops, busStopsReceived]);
+
+        const fetchBusStopsIfNeeded = () => {
+            if (shouldFetchBusStops()) {
+                fetchBusStops();
+            }
+        };
+
+        fetchBusStopsIfNeeded();
+    }, [coordinates, busStops, dispatchBusStopAction, fetchingBusStops, busStopsReceived]);
 
     return (
         <Grid align="left">
