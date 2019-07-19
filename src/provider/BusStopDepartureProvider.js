@@ -14,11 +14,11 @@ function reducer(state, action) {
         case 'BUS_STOPS_ERROR':
             return { ...state, fetchingBusStopDepartures: false };
         case 'BUS_STOP_DEPARTURES_RECEIVED':
-            const { busStopId, departures } = action.payload;
+            const { busStopId, busStopDepartures } = action.payload;
             return {
                 busStopDeparturesMap: {
                     ...state.departureMap,
-                    [busStopId]: departures
+                    [busStopId]: busStopDepartures
                 },
                 fetchingBusStopDepartures: false
             };

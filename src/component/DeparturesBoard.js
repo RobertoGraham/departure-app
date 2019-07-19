@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { BusStopDepartureContext } from '../provider/BusStopDepartureProvider';
 import { Typography } from '@rmwc/typography';
 import '@material/typography/dist/mdc.typography.css';
@@ -9,7 +9,62 @@ function DeparturesBoard({ match }) {
     const { params } = match;
     const { id } = params;
     const busStopDepartures = busStopDeparturesMap[id];
-    const [{ busStops }, dispatchBusStopAction] = useContext(BusStopContext);
+    const [{ busStops, fetchingBusStop }, dispatchBusStopAction] = useContext(BusStopContext);
+    const busStop = busStops.find(busStop => busStop.id === id);
+    const [busStopExists, setBusStopExists] = useState(true);
+
+    useEffect(() => {
+        const requestBusStopAction = () => {
+            return {
+                type: 'BUS_STOP_REQUESTED'
+            }
+        };
+
+        const receiveBusStopAction = (busStop) => {
+            return {
+                type: 'BUS_STOP_RECEIVED',
+                payload: busStop
+            };
+        };
+
+        const errorFetchingBusStopAction = () => {
+            return {
+                type: 'BUS_STOP_ERROR'
+            };
+        };
+
+        const shouldFetchBusStop = () => {
+            return !busStop
+                && busStopExists
+                && !fetchingBusStop;
+        };
+
+        const fetchBusStop = async () => {
+            dispatchBusStopAction(requestBusStopAction());
+            try {
+                const response = await fetch(`/api/busStops/${id}`);
+                if (200 === response.status) {
+                    const busStop = await response.json();
+                    dispatchBusStopAction(receiveBusStopAction(busStop))
+                } else {
+                    if (404 === response.status) {
+                        setBusStopExists(false);
+                    }
+                    dispatchBusStopAction(errorFetchingBusStopAction());
+                }
+            } catch (error) {
+                dispatchBusStopAction(errorFetchingBusStopAction());
+            }
+        };
+
+        const fetchBusStopIfNeeded = () => {
+            if (shouldFetchBusStop()) {
+                fetchBusStop();
+            }
+        };
+
+        fetchBusStopIfNeeded();
+    }, [busStop, dispatchBusStopAction, fetchingBusStop, id, busStopExists])
 
     useEffect(() => {
         const requestBusStopDeparturesAction = () => {
@@ -18,17 +73,10 @@ function DeparturesBoard({ match }) {
             };
         };
 
-        const receiveBusStopDeparturesAction = ({ departures }) => {
+        const receiveBusStopDeparturesAction = (busStopDepartures) => {
             return {
                 type: 'BUS_STOP_DEPARTURES_RECEIVED',
-                payload: { busStopId: id, departures }
-            };
-        };
-
-        const receiveBusStopAction = ({ busStop }) => {
-            return {
-                type: 'BUS_STOP_RECEIVED',
-                payload: { busStop }
+                payload: { busStopId: id, busStopDepartures }
             };
         };
 
@@ -39,7 +87,8 @@ function DeparturesBoard({ match }) {
         };
 
         const shouldFetchBusStopDepartures = () => {
-            return !busStopDepartures
+            return busStop
+                && !busStopDepartures
                 && !fetchingBusStopDepartures;
         };
 
@@ -49,7 +98,6 @@ function DeparturesBoard({ match }) {
                 const response = await fetch(`/api/busStops/${id}/departures`);
                 if (200 === response.status) {
                     const busStopDepartures = await response.json();
-                    dispatchBusStopAction(receiveBusStopAction(busStopDepartures))
                     dispatchBusStopDepartureAction(receiveBusStopDeparturesAction(busStopDepartures));
                 } else {
                     dispatchBusStopDepartureAction(errorFetchingBusStopDeparturesAction());
@@ -66,9 +114,8 @@ function DeparturesBoard({ match }) {
         };
 
         fetchBusStopDeparturesIfNeeded();
-    }, [busStopDepartures, fetchingBusStopDepartures, id, dispatchBusStopAction, dispatchBusStopDepartureAction]);
+    }, [busStopDepartures, fetchingBusStopDepartures, id, dispatchBusStopAction, dispatchBusStopDepartureAction, busStop]);
 
-    const busStop = busStops.find(busStop => busStop.id === id);
     const titleText = busStop ? busStop.name : `No bus stop found with id: ${id}`;
     const subtitleText = busStop ? busStop.locality : '';
 
