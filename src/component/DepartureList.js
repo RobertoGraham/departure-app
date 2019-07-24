@@ -1,14 +1,21 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BusStopDepartureContext } from "../provider/BusStopDepartureProvider";
-import "@rmwc/data-table/data-table.css";
-import { SimpleDataTable } from "@rmwc/data-table";
+import { Grid, GridCell } from "@rmwc/grid";
+import "@material/layout-grid/dist/mdc.layout-grid.css";
+import DepartureListItem from "./DepartureListItem";
+import groupArray from "group-array";
 
 function DepartureList({ busStop }) {
+  const [busStopDeparturesFetched, setBusStopDeparturesFetched] = useState(
+    false
+  );
   const [
     { busStopDeparturesMap, fetchingBusStopDepartures },
     dispatchBusStopDepartureAction
   ] = useContext(BusStopDepartureContext);
-  const busStopDepartures = busStopDeparturesMap[busStop.id];
+  const busStopDepartures = busStopDeparturesMap[busStop.id]
+    ? busStopDeparturesMap[busStop.id]
+    : [];
 
   useEffect(() => {
     const requestBusStopDeparturesAction = () => {
@@ -31,7 +38,7 @@ function DepartureList({ busStop }) {
     };
 
     const shouldFetchBusStopDepartures = () => {
-      return !busStopDepartures && !fetchingBusStopDepartures;
+      return !busStopDeparturesFetched && !fetchingBusStopDepartures;
     };
 
     const fetchBusStopDepartures = async () => {
@@ -40,6 +47,7 @@ function DepartureList({ busStop }) {
         const response = await fetch(`/api/busStops/${busStop.id}/departures`);
         if (200 === response.status) {
           const busStopDepartures = await response.json();
+          setBusStopDeparturesFetched(true);
           dispatchBusStopDepartureAction(
             receiveBusStopDeparturesAction(busStopDepartures)
           );
@@ -64,31 +72,41 @@ function DepartureList({ busStop }) {
     busStopDepartures,
     fetchingBusStopDepartures,
     dispatchBusStopDepartureAction,
-    busStop
+    busStop,
+    busStopDeparturesFetched
   ]);
 
+  const lineToOperatorToBusStopDeparturesMap = groupArray(
+    busStopDepartures,
+    "lineName",
+    "operatorName"
+  );
+
   return (
-    <React.Fragment>
-      {busStopDepartures ? (
-        <SimpleDataTable
-          getCellProps={(_cell, _index, isHead) => {
-            return {
-              theme: isHead
-                ? "textSecondaryOnBackground"
-                : "textPrimaryOnBackground"
-            };
-          }}
-          headers={[["Service", "Destination", "Time"]]}
-          data={busStopDepartures.map(busStopDeparture => [
-            busStopDeparture.lineName,
-            busStopDeparture.destination,
-            new Date(busStopDeparture.epochSecond * 1000).toLocaleTimeString()
-          ])}
-        />
-      ) : (
-        <React.Fragment />
-      )}
-    </React.Fragment>
+    <Grid align="left">
+      {Object.keys(lineToOperatorToBusStopDeparturesMap).flatMap(line => {
+        const operatorToBusStopDeparturesMap =
+          lineToOperatorToBusStopDeparturesMap[line];
+        return Object.keys(operatorToBusStopDeparturesMap).flatMap(operator => {
+          const busStopDepartures = operatorToBusStopDeparturesMap[operator];
+          return (
+            <GridCell
+              desktop={3}
+              phone={4}
+              tablet={4}
+              align="top"
+              key={`${line}.${operator}`}
+            >
+              <DepartureListItem
+                line={line}
+                operator={operator}
+                busStopDepartures={busStopDepartures}
+              />
+            </GridCell>
+          );
+        });
+      })}
+    </Grid>
   );
 }
 

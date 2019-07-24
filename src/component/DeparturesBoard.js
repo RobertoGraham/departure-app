@@ -3,8 +3,6 @@ import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
 import { BusStopContext } from "../provider/BusStopProvider";
 import DepartureList from "./DepartureList";
-import { Grid, GridCell } from "@rmwc/grid";
-import "@material/layout-grid/dist/mdc.layout-grid.css";
 
 function DeparturesBoard({ match }) {
   const { params } = match;
@@ -99,11 +97,7 @@ function DeparturesBoard({ match }) {
         </Typography>
       </header>
       {busStop ? (
-        <Grid align="middle">
-          <GridCell desktop={6} phone={4} tablet={6}>
-            <DepartureList busStop={busStop} />
-          </GridCell>
-        </Grid>
+        <DepartureList key={busStop.id} busStop={busStop} />
       ) : (
         <React.Fragment />
       )}
