@@ -16,7 +16,5 @@ ENV PORT=80
 COPY nginx/default.template /etc/nginx/conf.d
 COPY --from=builder $SOURCES_DIR/build /usr/share/nginx/html
 EXPOSE $PORT
-CMD envsubst \
-  '\$PORT \$BUS_API_URL' \
-  < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf \
+CMD envsubst '\$PORT \$BUS_API_URL' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf \
   && nginx -g 'daemon off;'
