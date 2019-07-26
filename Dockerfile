@@ -19,5 +19,4 @@ EXPOSE $PORT
 CMD envsubst \
   '\$PORT \$BUS_API_URL' \
   < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf \
-  && rm /etc/nginx/conf.d/default.template \
   && nginx -g 'daemon off;'
