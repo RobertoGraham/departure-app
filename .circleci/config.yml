@@ -1,0 +1,19 @@
+version: 2.0
+jobs:
+  build:
+    branches:
+      only:
+        - master
+    docker:
+      - image: alpine:3.10.2
+    steps:
+      - run:
+          command: |
+            apk --no-cache add curl
+            curl -sSfX PATCH \
+            -o /dev/null \
+            -d '{"BUS_API_CLIENT_COMMIT":"'"$CIRCLE_SHA1"'"}' \
+            -H "Content-Type:application/json" \
+            -H "Authorization:Bearer $HEROKU_API_KEY" \
+            -H "Accept:application/vnd.heroku+json; version=3" \
+            https://api.heroku.com/apps/bus-api-terraform-backend/config-vars
