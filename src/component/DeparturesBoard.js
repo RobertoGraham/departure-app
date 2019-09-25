@@ -3,10 +3,10 @@ import { Typography } from "@rmwc/typography";
 import "@material/typography/dist/mdc.typography.css";
 import { BusStopContext } from "../provider/BusStopProvider";
 import DepartureList from "./DepartureList";
+import { useParams } from "react-router-dom";
 
-function DeparturesBoard({ match }) {
-  const { params } = match;
-  const { id } = params;
+function DeparturesBoard() {
+  const { id } = useParams();
   const [{ busStops, fetchingBusStop }, dispatchBusStopAction] = useContext(
     BusStopContext
   );
