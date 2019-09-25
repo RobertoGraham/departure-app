@@ -9,7 +9,7 @@ COPY src ./src
 COPY public ./public
 RUN npm run build
 
-FROM nginx:1.17.3-alpine
+FROM nginx:1.17.4-alpine
 ARG SOURCES_DIR
 ENV BUS_API_URL=http://host.docker.internal:8080
 ENV PORT=80
