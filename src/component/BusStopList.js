@@ -86,21 +86,11 @@ function BusStopList({ coords }) {
 
   return (
     <Grid align="left">
-      {busStops
-        .sort((busStop1, busStop2) =>
-          busStop1.name.localeCompare(busStop2.name)
-        )
-        .map(busStop => (
-          <GridCell
-            desktop={4}
-            phone={4}
-            tablet={4}
-            align="top"
-            key={busStop.id}
-          >
-            <BusStopListItem {...busStop} />
-          </GridCell>
-        ))}
+      {busStops.map(busStop => (
+        <GridCell desktop={4} phone={4} tablet={4} align="top" key={busStop.id}>
+          <BusStopListItem {...busStop} />
+        </GridCell>
+      ))}
     </Grid>
   );
 }
