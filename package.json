@@ -1,5 +1,5 @@
 {
-  "name": "bus-api-client",
+  "name": "departure-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

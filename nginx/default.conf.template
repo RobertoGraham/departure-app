@@ -18,6 +18,6 @@ server {
         try_files $uri $uri/ /index.html;
     }
     location /api {
-        proxy_pass ${BUS_API_URL}/;
+        proxy_pass ${DEPARTURE_API_URL}/;
     }
 }
