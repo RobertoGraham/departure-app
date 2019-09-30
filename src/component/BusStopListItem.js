@@ -7,26 +7,26 @@ import "@material/card/dist/mdc.card.css";
 import "@material/button/dist/mdc.button.css";
 import "@material/icon-button/dist/mdc.icon-button.css";
 import { LocationContext } from "../provider/LocationProvider";
-import { getPreciseDistance } from "geolib";
+import { getPreciseDistance, getDistance } from "geolib";
 
 function BusStopListItem({ id, name, locality, longitude, latitude }) {
   const [{ coordinates }] = useContext(LocationContext);
-  const [distance, setDistance] = useState(-1);
-  const myLongitude = coordinates.longitude;
-  const myLatitude = coordinates.latitude;
+  const myCoordinates = {
+    longitude: coordinates.longitude,
+    latitude: coordinates.latitude
+  };
+  const busStopCoordinates = { longitude, latitude };
+  const [distance, setDistance] = useState(
+    getDistance(myCoordinates, busStopCoordinates)
+  );
+  const [preciseDistance, setPreciseDistance] = useState(false);
 
   useEffect(() => {
-    if (distance < 0)
-      setDistance(
-        getPreciseDistance(
-          {
-            longitude: myLongitude,
-            latitude: myLatitude
-          },
-          { longitude, latitude }
-        )
-      );
-  }, [distance, myLatitude, myLongitude, latitude, longitude]);
+    if (!preciseDistance) {
+      setPreciseDistance(true);
+      setDistance(getPreciseDistance(myCoordinates, busStopCoordinates));
+    }
+  }, [preciseDistance, myCoordinates, busStopCoordinates]);
 
   return (
     <Card>
