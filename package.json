@@ -12,7 +12,7 @@
     "geolib": "^3.0.4",
     "group-array": "^1.0.0",
     "http-proxy-middleware": "^0.20.0",
-    "react": "^16.9.0",
+    "react": "^16.10.1",
     "react-dom": "^16.9.0",
     "react-geolocated": "^3.0.1",
     "react-router-dom": "^5.1.0",
