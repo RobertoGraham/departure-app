@@ -2,29 +2,15 @@ import React, { useEffect, useContext } from "react";
 import { Grid, GridCell } from "@rmwc/grid";
 import "@material/layout-grid/dist/mdc.layout-grid.css";
 import BusStopListItem from "./BusStopListItem";
-import { geolocated } from "react-geolocated";
 import { LocationContext } from "../provider/LocationProvider";
 import { BusStopContext } from "../provider/BusStopProvider";
 
-function BusStopList({ coords }) {
-  const [{ coordinates }, dispatchLocationAction] = useContext(LocationContext);
+function BusStopList() {
+  const [{ coordinates }] = useContext(LocationContext);
   const [
     { busStops, busStopsReceived, fetchingBusStops },
     dispatchBusStopAction
   ] = useContext(BusStopContext);
-
-  useEffect(() => {
-    const setLocationAction = coords => {
-      return {
-        type: "SET_LOCATION",
-        payload: coords
-      };
-    };
-
-    if (coords) {
-      dispatchLocationAction(setLocationAction(coords));
-    }
-  }, [coords, dispatchLocationAction]);
 
   useEffect(() => {
     const requestBusStopsAction = () => {
@@ -95,4 +81,4 @@ function BusStopList({ coords }) {
   );
 }
 
-export default geolocated({ userDecisionTimeout: 5000 })(BusStopList);
+export default BusStopList;

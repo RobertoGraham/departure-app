@@ -3,7 +3,7 @@ import React, { useReducer, createContext } from "react";
 export const LocationContext = createContext();
 
 const initialState = {
-  coordinates: null
+  coordinates: {}
 };
 
 function reducer(state, action) {
