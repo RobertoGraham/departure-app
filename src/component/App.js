@@ -8,29 +8,25 @@ import { Grid, GridCell } from "@rmwc/grid";
 import "@material/layout-grid/dist/mdc.layout-grid.css";
 import { LocationContext } from "../provider/LocationProvider";
 import { usePosition } from "use-position";
+import { setLocation } from "../action";
 
 function App() {
   const [
     {
-      coordinates: { latitude: lat, longitude: lon }
+      coordinates: { latitude, longitude }
     },
     dispatchLocationAction
   ] = useContext(LocationContext);
 
-  const { latitude, longitude } = usePosition(true);
+  const { latitude: newLatitude, longitude: newLongitude } = usePosition(true);
 
   useEffect(() => {
-    const setLocationAction = coords => {
-      return {
-        type: "SET_LOCATION",
-        payload: coords
-      };
-    };
-
-    if (latitude !== lat || longitude !== lon) {
-      dispatchLocationAction(setLocationAction({ latitude, longitude }));
+    if (newLatitude !== latitude || newLongitude !== longitude) {
+      dispatchLocationAction(
+        setLocation({ latitude: newLatitude, longitude: newLongitude })
+      );
     }
-  }, [lat, lon, latitude, longitude, dispatchLocationAction]);
+  }, [latitude, longitude, newLatitude, newLongitude, dispatchLocationAction]);
 
   return (
     <Switch>

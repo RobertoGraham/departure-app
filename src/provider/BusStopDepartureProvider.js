@@ -1,4 +1,9 @@
 import React, { useReducer, createContext } from "react";
+import {
+  BUS_STOP_DEPARTURES_REQUESTED,
+  BUS_STOP_DEPARTURES_RECEIVED,
+  BUS_STOP_DEPARTURES_ERROR
+} from "../constant";
 
 export const BusStopDepartureContext = createContext();
 
@@ -9,11 +14,11 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
-    case "BUS_STOP_DEPARTURES_REQUESTED":
+    case BUS_STOP_DEPARTURES_REQUESTED:
       return { ...state, fetchingBusStopDepartures: true };
-    case "BUS_STOPS_ERROR":
+    case BUS_STOP_DEPARTURES_ERROR:
       return { ...state, fetchingBusStopDepartures: false };
-    case "BUS_STOP_DEPARTURES_RECEIVED":
+    case BUS_STOP_DEPARTURES_RECEIVED:
       const { busStopId, busStopDepartures } = action.payload;
       return {
         busStopDeparturesMap: {

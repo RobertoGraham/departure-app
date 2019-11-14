@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "@material/theme/dist/mdc.theme.css";
-import "./css/index.css";
+import "./style/index.css";
 import App from "./component/App";
 import { ThemeProvider } from "@rmwc/theme";
 import { BusStopDepartureProvider } from "./provider/BusStopDepartureProvider";

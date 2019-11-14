@@ -4,54 +4,44 @@ import "@material/layout-grid/dist/mdc.layout-grid.css";
 import BusStopListItem from "./BusStopListItem";
 import { LocationContext } from "../provider/LocationProvider";
 import { BusStopContext } from "../provider/BusStopProvider";
+import {
+  requestBusStops,
+  receiveBusStops,
+  errorFetchingBusStops
+} from "../action";
 
 function BusStopList() {
-  const [{ coordinates }] = useContext(LocationContext);
+  const [
+    {
+      coordinates: { latitude, longitude }
+    }
+  ] = useContext(LocationContext);
   const [
     { busStops, busStopsReceived, fetchingBusStops },
     dispatchBusStopAction
   ] = useContext(BusStopContext);
 
   useEffect(() => {
-    const requestBusStopsAction = () => {
-      return {
-        type: "BUS_STOPS_REQUESTED"
-      };
-    };
-
-    const receiveBusStopsAction = busStops => {
-      return {
-        type: "BUS_STOPS_RECEIVED",
-        payload: busStops
-      };
-    };
-
-    const errorFetchingBusStopsAction = () => {
-      return {
-        type: "BUS_STOPS_ERROR"
-      };
-    };
-
     const shouldFetchBusStops = () => {
-      return !busStopsReceived && coordinates && !fetchingBusStops;
+      return !busStopsReceived && latitude && longitude && !fetchingBusStops;
     };
 
     const fetchBusStops = async () => {
-      dispatchBusStopAction(requestBusStopsAction());
+      dispatchBusStopAction(requestBusStops());
       try {
         const response = await fetch(
           `/api/busStops?latitude=${encodeURIComponent(
-            coordinates.latitude
-          )}&longitude=${encodeURIComponent(coordinates.longitude)}`
+            latitude
+          )}&longitude=${encodeURIComponent(longitude)}`
         );
         if (200 === response.status) {
           const busStops = await response.json();
-          dispatchBusStopAction(receiveBusStopsAction(busStops));
+          dispatchBusStopAction(receiveBusStops(busStops));
         } else {
-          dispatchBusStopAction(errorFetchingBusStopsAction());
+          dispatchBusStopAction(errorFetchingBusStops());
         }
       } catch (error) {
-        dispatchBusStopAction(errorFetchingBusStopsAction());
+        dispatchBusStopAction(errorFetchingBusStops());
       }
     };
 
@@ -63,11 +53,12 @@ function BusStopList() {
 
     fetchBusStopsIfNeeded();
   }, [
-    coordinates,
     busStops,
     dispatchBusStopAction,
     fetchingBusStops,
-    busStopsReceived
+    busStopsReceived,
+    latitude,
+    longitude
   ]);
 
   return (

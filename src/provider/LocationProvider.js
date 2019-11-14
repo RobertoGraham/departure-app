@@ -1,4 +1,5 @@
 import React, { useReducer, createContext } from "react";
+import { SET_LOCATION } from "../constant";
 
 export const LocationContext = createContext();
 
@@ -8,7 +9,7 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
-    case "SET_LOCATION":
+    case SET_LOCATION:
       return {
         coordinates: action.payload
       };

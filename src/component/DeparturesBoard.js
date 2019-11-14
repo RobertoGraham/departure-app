@@ -4,6 +4,11 @@ import "@material/typography/dist/mdc.typography.css";
 import { BusStopContext } from "../provider/BusStopProvider";
 import DepartureList from "./DepartureList";
 import { useParams } from "react-router-dom";
+import {
+  requestBusStop,
+  receiveBusStop,
+  errorFetchingBusStop
+} from "../action";
 
 function DeparturesBoard() {
   const { id } = useParams();
@@ -14,44 +19,25 @@ function DeparturesBoard() {
   const [busStopExists, setBusStopExists] = useState(true);
 
   useEffect(() => {
-    const requestBusStopAction = () => {
-      return {
-        type: "BUS_STOP_REQUESTED"
-      };
-    };
-
-    const receiveBusStopAction = busStop => {
-      return {
-        type: "BUS_STOP_RECEIVED",
-        payload: busStop
-      };
-    };
-
-    const errorFetchingBusStopAction = () => {
-      return {
-        type: "BUS_STOP_ERROR"
-      };
-    };
-
     const shouldFetchBusStop = () => {
       return !busStop && busStopExists && !fetchingBusStop;
     };
 
     const fetchBusStop = async () => {
-      dispatchBusStopAction(requestBusStopAction());
+      dispatchBusStopAction(requestBusStop());
       try {
         const response = await fetch(`/api/busStops/${id}`);
         if (200 === response.status) {
           const busStop = await response.json();
-          dispatchBusStopAction(receiveBusStopAction(busStop));
+          dispatchBusStopAction(receiveBusStop(busStop));
         } else {
           if (404 === response.status) {
             setBusStopExists(false);
           }
-          dispatchBusStopAction(errorFetchingBusStopAction());
+          dispatchBusStopAction(errorFetchingBusStop());
         }
       } catch (error) {
-        dispatchBusStopAction(errorFetchingBusStopAction());
+        dispatchBusStopAction(errorFetchingBusStop());
       }
     };
 
