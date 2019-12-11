@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@rmwc/card": "^5.7.0",
+    "@rmwc/card": "^5.7.2",
     "@rmwc/data-table": "^5.7.0",
     "@rmwc/grid": "^5.7.0",
     "@rmwc/list": "^5.7.0",
