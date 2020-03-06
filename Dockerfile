@@ -1,6 +1,6 @@
 ARG SOURCES_DIR=/src
 
-FROM node:13.0.1-alpine AS builder
+FROM node:13.10.1-alpine AS builder
 ARG SOURCES_DIR
 WORKDIR $SOURCES_DIR
 COPY package.json .
