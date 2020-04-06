@@ -7,7 +7,7 @@
     "@rmwc/data-table": "^5.7.0",
     "@rmwc/grid": "^5.7.0",
     "@rmwc/list": "^5.7.0",
-    "@rmwc/theme": "^5.7.0",
+    "@rmwc/theme": "^6.0.12",
     "@rmwc/typography": "^5.7.1",
     "geolib": "^3.1.0",
     "group-array": "^1.0.0",
