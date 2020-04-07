@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@rmwc/card": "^5.7.0",
-    "@rmwc/data-table": "^5.7.0",
+    "@rmwc/data-table": "^6.0.14",
     "@rmwc/grid": "^5.7.0",
     "@rmwc/list": "^5.7.0",
     "@rmwc/theme": "^5.7.0",
