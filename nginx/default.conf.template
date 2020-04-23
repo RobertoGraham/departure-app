@@ -1,5 +1,12 @@
 server {
+    listen ${PORT};
+    server_name prod-departure-app.herokuapp.com;
+    return 301 $scheme://departure.prosciutto.dev$request_uri;
+}
+
+server {
     listen ${PORT} default_server;
+    server_name _;
     root /usr/share/nginx/html;
     index index.html index.htm;
     location ~* \.(?:manifest|appcache|html?|xml|json)$ {
@@ -20,10 +27,4 @@ server {
     location /api {
         proxy_pass ${DEPARTURE_API_URL}/;
     }
-}
-
-server {
-    listen ${PORT};
-    server_name prod-departure-app.herokuapp.com;
-    return 301 $scheme://departure.prosciutto.dev$request_uri;
 }
