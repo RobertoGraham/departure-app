@@ -21,3 +21,8 @@ server {
         proxy_pass ${DEPARTURE_API_URL}/;
     }
 }
+
+server {
+    server_name prod-departure-app.herokuapp.com;
+    return 301 $scheme://departure.prosciutto.dev$request_uri;
+}
