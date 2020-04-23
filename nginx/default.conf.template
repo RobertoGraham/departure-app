@@ -6,7 +6,6 @@ server {
 
 server {
     listen ${PORT} default_server;
-    server_name departure.prosciutto.dev;
     root /usr/share/nginx/html;
     index index.html index.htm;
     location ~* \.(?:manifest|appcache|html?|xml|json)$ {
