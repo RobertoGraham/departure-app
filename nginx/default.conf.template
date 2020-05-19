@@ -1,6 +1,6 @@
 server {
     listen ${PORT};
-    server_name prod-departure-app.herokuapp.com;
+    server_name departure-app.herokuapp.com;
     return 301 $scheme://departure.prosciutto.dev$request_uri;
 }
 
