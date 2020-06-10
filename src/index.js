@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "@material/theme/dist/mdc.theme.css";
 import "./style/index.css";
 import App from "./component/App";
 import { ThemeProvider } from "@rmwc/theme";
+import '@rmwc/theme/styles';
 import { BusStopDepartureProvider } from "./provider/BusStopDepartureProvider";
 import { BrowserRouter } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
