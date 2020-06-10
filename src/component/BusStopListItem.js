@@ -1,11 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Typography } from "@rmwc/typography";
-import "@material/typography/dist/mdc.typography.css";
+import "@rmwc/typography/styles";
 import { Card, CardPrimaryAction } from "@rmwc/card";
+import "@rmwc/card/styles";
 import { Link } from "react-router-dom";
-import "@material/card/dist/mdc.card.css";
-import "@material/button/dist/mdc.button.css";
-import "@material/icon-button/dist/mdc.icon-button.css";
 import { LocationContext } from "../provider/LocationProvider";
 import { getPreciseDistance, getDistance } from "geolib";
 

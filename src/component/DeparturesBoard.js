@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Typography } from "@rmwc/typography";
-import "@material/typography/dist/mdc.typography.css";
+import "@rmwc/typography/styles";
 import { BusStopContext } from "../provider/BusStopProvider";
 import DepartureList from "./DepartureList";
 import { useParams } from "react-router-dom";

@@ -1,10 +1,8 @@
 import React from "react";
 import { Card } from "@rmwc/card";
-import "@material/card/dist/mdc.card.css";
-import "@material/button/dist/mdc.button.css";
-import "@material/icon-button/dist/mdc.icon-button.css";
+import "@rmwc/card/styles";
 import { Typography } from "@rmwc/typography";
-import "@material/typography/dist/mdc.typography.css";
+import "@rmwc/typography/styles";
 import {
   ListDivider,
   List,
@@ -13,7 +11,7 @@ import {
   ListItemPrimaryText,
   ListItemSecondaryText
 } from "@rmwc/list";
-import "@material/list/dist/mdc.list.css";
+import "@rmwc/list/styles";
 
 function DepartureListItem({ line, operator, busStopDepartures }) {
   return (

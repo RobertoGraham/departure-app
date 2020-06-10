@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { BusStopDepartureContext } from "../provider/BusStopDepartureProvider";
 import { Grid, GridCell } from "@rmwc/grid";
-import "@material/layout-grid/dist/mdc.layout-grid.css";
+import "@rmwc/grid/styles";
 import DepartureListItem from "./DepartureListItem";
 import groupArray from "group-array";
 import {

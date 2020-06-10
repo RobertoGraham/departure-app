@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { Grid, GridCell } from "@rmwc/grid";
-import "@material/layout-grid/dist/mdc.layout-grid.css";
+import "@rmwc/grid/styles";
 import BusStopListItem from "./BusStopListItem";
 import { LocationContext } from "../provider/LocationProvider";
 import { BusStopContext } from "../provider/BusStopProvider";
