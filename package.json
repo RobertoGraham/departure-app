@@ -6,7 +6,7 @@
     "@rmwc/card": "^6.0.14",
     "@rmwc/grid": "^6.0.14",
     "@rmwc/list": "^6.0.14",
-    "@rmwc/theme": "^6.1.0",
+    "@rmwc/theme": "^6.1.2",
     "@rmwc/typography": "^6.0.14",
     "geolib": "^3.3.1",
     "group-array": "^1.0.0",
