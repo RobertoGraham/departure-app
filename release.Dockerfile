@@ -1,0 +1,1 @@
+FROM ghcr.io/robertograham/departure-app:latest
