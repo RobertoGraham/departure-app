@@ -1,38 +1,56 @@
 version: 2.1
-jobs:
-  publish-docker-image:
+commands:
+  setup-remote-docker:
+    steps:
+      - setup_remote_docker:
+          version: 19.03.13
+
+executors:
+  docker:
     docker:
-      - image: docker:18.09.3-git
+      - image: docker:19.03.13-git
+
+jobs:
+  build-docker-image:
+    executor: docker
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 18.09.3
-      - run:
-          command: |
-            docker login docker.pkg.github.com -u RobertoGraham -p $GITHUB_TOKEN
-            IMAGE_TAG=docker.pkg.github.com/robertograham/departure-app/departure-app:latest
-            docker build -t $IMAGE_TAG .
-            docker push $IMAGE_TAG
-  update-release-tag:
-    docker:
-      - image: curlimages/curl:7.66.0
+      - setup-remote-docker
+      - run: |
+          docker build --target builder -t builder .
+  publish-docker-image:
+    executor: docker
+    environment:
+      IMAGE_TAG: ghcr.io/robertograham/departure-app:latest
     steps:
-      - run:
-          command: |
-            curl -sSfX PATCH \
-            -o /dev/null \
-            -d '{"DEPARTURE_APP_COMMIT_HASH":"'"$CIRCLE_SHA1"'"}' \
-            -H "Content-Type:application/json" \
-            -H "Authorization:Bearer $HEROKU_API_KEY" \
-            -H "Accept:application/vnd.heroku+json; version=3" \
-            https://api.heroku.com/apps/departure-infra-backend/config-vars
+      - checkout
+      - setup-remote-docker
+      - run: |
+          docker login ghcr.io -u RobertoGraham -p $PERSONAL_ACCESS_TOKEN
+          docker build -t $IMAGE_TAG .
+          docker push $IMAGE_TAG
+  deploy-docker-image:
+    docker:
+      - image: curlimages/curl:7.74.0
+    steps:
+      - run: |
+          curl -sSfX POST \
+          -o /dev/null \
+          -d '{"branch":"master","parameters":{"application":"departure-app","commit-hash":"'"$CIRCLE_SHA1"'"}}' \
+          -H "Content-Type:application/json" \
+          -H "Circle-Token:$CIRCLE_TOKEN" \
+          https://circleci.com/api/v2/project/gh/RobertoGraham/departure-infra/pipeline
 workflows:
   release:
     jobs:
+      - build-docker-image:
+          filters:
+            branches:
+              ignore: master
       - publish-docker-image:
           filters:
             branches:
               only: master
-      - update-release-tag:
+      - deploy-docker-image:
           requires:
             - publish-docker-image

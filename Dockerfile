@@ -13,6 +13,7 @@ FROM nginx:1.19.0-alpine
 ARG SOURCES_DIR
 ENV DEPARTURE_API_URL=http://host.docker.internal:8080
 ENV PORT=80
+LABEL org.opencontainers.image.source=https://github.com/robertograham/departure-app
 COPY nginx/default.conf.template /etc/nginx/conf.d
 COPY --from=builder $SOURCES_DIR/build /usr/share/nginx/html
 EXPOSE $PORT
