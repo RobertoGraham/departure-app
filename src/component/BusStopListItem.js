@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useMemo } from "react";
 import { Typography } from "@rmwc/typography";
 import "@rmwc/typography/styles";
 import { Card, CardPrimaryAction } from "@rmwc/card";
@@ -9,11 +9,15 @@ import { getPreciseDistance, getDistance } from "geolib";
 
 function BusStopListItem({ id, name, locality, longitude, latitude }) {
   const [{ coordinates }] = useContext(LocationContext);
-  const myCoordinates = {
-    longitude: coordinates.longitude,
-    latitude: coordinates.latitude
-  };
-  const busStopCoordinates = { longitude, latitude };
+  const myCoordinates = useMemo(() => {
+    return {
+      longitude: coordinates.longitude,
+      latitude: coordinates.latitude,
+    };
+  }, [coordinates]);
+  const busStopCoordinates = useMemo(() => {
+    return { longitude, latitude };
+  }, [longitude, latitude]);
   const [distance, setDistance] = useState(
     getDistance(myCoordinates, busStopCoordinates)
   );
@@ -37,7 +41,7 @@ function BusStopListItem({ id, name, locality, longitude, latitude }) {
             style={{
               whiteSpace: "wrap",
               overflow: "hidden",
-              textOverflow: "ellipsis"
+              textOverflow: "ellipsis",
             }}
           >
             {name}
@@ -50,7 +54,7 @@ function BusStopListItem({ id, name, locality, longitude, latitude }) {
               marginTop: "-1rem",
               whiteSpace: "wrap",
               overflow: "hidden",
-              textOverflow: "ellipsis"
+              textOverflow: "ellipsis",
             }}
           >
             {locality}

@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import {
   requestBusStop,
   receiveBusStop,
-  errorFetchingBusStop
+  errorFetchingBusStop,
 } from "../action";
 
 function DeparturesBoard() {
@@ -15,7 +15,7 @@ function DeparturesBoard() {
   const [{ busStops, fetchingBusStop }, dispatchBusStopAction] = useContext(
     BusStopContext
   );
-  const busStop = busStops.find(busStop => busStop.id === id);
+  const busStop = busStops.find((busStop) => busStop.id === id);
   const [busStopExists, setBusStopExists] = useState(true);
 
   useEffect(() => {
@@ -63,7 +63,7 @@ function DeparturesBoard() {
           style={{
             whiteSpace: "wrap",
             overflow: "hidden",
-            textOverflow: "ellipsis"
+            textOverflow: "ellipsis",
           }}
         >
           {titleText}
@@ -76,14 +76,14 @@ function DeparturesBoard() {
             marginTop: "-1rem",
             whiteSpace: "wrap",
             overflow: "hidden",
-            textOverflow: "ellipsis"
+            textOverflow: "ellipsis",
           }}
         >
           {subtitleText}
         </Typography>
       </header>
       {busStop ? (
-        <DepartureList key={busStop.id} busStop={busStop} />
+        <DepartureList key={busStop.id} busStopId={busStop.id} />
       ) : (
         <React.Fragment />
       )}
