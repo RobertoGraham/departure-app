@@ -1,6 +1,6 @@
 ARG SOURCES_DIR=/src
 
-FROM node:14.4.0-alpine3.12 AS builder
+FROM node:14.15.4-alpine3.12 AS builder
 ARG SOURCES_DIR
 WORKDIR $SOURCES_DIR
 COPY package.json .
@@ -9,7 +9,7 @@ COPY src ./src
 COPY public ./public
 RUN npm run build
 
-FROM nginx:1.19.0-alpine
+FROM nginx:1.19.6-alpine
 ARG SOURCES_DIR
 ENV DEPARTURE_API_URL=http://host.docker.internal:8080
 ENV PORT=80
