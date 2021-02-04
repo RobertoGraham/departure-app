@@ -1,26 +1,40 @@
 version: 2.1
 
-jobs:
-  build-docker-image:
-    docker:
-      - image: docker:19.03.13-git
+commands:
+  setup-remote-docker:
     steps:
-      - checkout
       - setup_remote_docker:
           version: 19.03.13
+
+executors:
+  docker:
+    docker:
+      - image: docker:19.03.13-git
+
+jobs:
+  build-docker-image:
+    executor: docker
+    steps:
+      - checkout
+      - setup-remote-docker
       - run: docker build --target builder -t builder .
   publish-docker-image:
-    machine:
-      image: ubuntu-2004:202101-01
+    executor: docker
     environment:
       IMAGE_TAG: ghcr.io/robertograham/departure-app:latest
     steps:
       - checkout
+      - setup-remote-docker
       - run: |
           docker login ghcr.io -u RobertoGraham -p $PERSONAL_ACCESS_TOKEN
           docker build -t $IMAGE_TAG .
-          docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/robertograham/departure-tests:latest
           docker push $IMAGE_TAG
+  run-tests:
+    machine:
+      image: ubuntu-2004:202101-01
+    steps:
+      - checkout
+      - run: docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock ghcr.io/robertograham/departure-tests:latest
   deploy-docker-image:
     docker:
       - image: curlimages/curl:7.74.0
@@ -32,6 +46,7 @@ jobs:
           -H "Content-Type:application/json" \
           -H "Circle-Token:$CIRCLE_TOKEN" \
           https://circleci.com/api/v2/project/gh/RobertoGraham/departure-infra/pipeline
+
 workflows:
   release:
     jobs:
@@ -43,6 +58,9 @@ workflows:
           filters:
             branches:
               only: master
-      - deploy-docker-image:
+      - run-tests:
           requires:
             - publish-docker-image
+      - deploy-docker-image:
+          requires:
+            - run-tests
