@@ -13,9 +13,10 @@ FROM nginx:1.19.6-alpine
 ARG SOURCES_DIR
 ENV DEPARTURE_API_URL=http://host.docker.internal:8080
 ENV PORT=80
+ENV REDIRECT_HOSTNAME=localhost
 LABEL org.opencontainers.image.source=https://github.com/robertograham/departure-app
 COPY nginx/default.conf.template /etc/nginx/conf.d
 COPY --from=builder $SOURCES_DIR/build /usr/share/nginx/html
 EXPOSE $PORT
-CMD envsubst '\$PORT \$DEPARTURE_API_URL' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf \
+CMD envsubst '\$PORT \$DEPARTURE_API_URL \$REDIRECT_HOSTNAME' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf \
   && nginx -g 'daemon off;'
