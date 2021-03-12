@@ -62,7 +62,7 @@ workflows:
           job: plan
           filters:
             branches:
-              ignore: master        
+              ignore: master
       - publish-docker-image:
           filters:
             branches:
