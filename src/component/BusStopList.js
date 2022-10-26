@@ -7,18 +7,18 @@ import { BusStopContext } from "../provider/BusStopProvider";
 import {
   requestBusStops,
   receiveBusStops,
-  errorFetchingBusStops
+  errorFetchingBusStops,
 } from "../action";
 
 function BusStopList() {
   const [
     {
-      coordinates: { latitude, longitude }
-    }
+      coordinates: { latitude, longitude },
+    },
   ] = useContext(LocationContext);
   const [
     { busStops, busStopsReceived, fetchingBusStops },
-    dispatchBusStopAction
+    dispatchBusStopAction,
   ] = useContext(BusStopContext);
 
   useEffect(() => {
@@ -58,12 +58,12 @@ function BusStopList() {
     fetchingBusStops,
     busStopsReceived,
     latitude,
-    longitude
+    longitude,
   ]);
 
   return (
     <Grid align="left">
-      {busStops.map(busStop => (
+      {busStops.map((busStop) => (
         <GridCell desktop={4} phone={4} tablet={4} align="top" key={busStop.id}>
           <BusStopListItem {...busStop} />
         </GridCell>

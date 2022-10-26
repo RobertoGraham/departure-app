@@ -1,24 +1,23 @@
 import React, { useContext, useEffect } from "react";
-import { Route, Switch } from "react-router-dom";
 import BusStopList from "./BusStopList";
 import DeparturesBoard from "./DeparturesBoard";
-import { Typography } from "@rmwc/typography";
+import UnknownRoute from "./UnknownRoute";
 import "@rmwc/typography/styles";
-import { Grid, GridCell } from "@rmwc/grid";
 import "@rmwc/grid/styles";
 import { LocationContext } from "../provider/LocationProvider";
-import { usePosition } from "use-position";
 import { setLocation } from "../action";
+import useGeolocation from "react-hook-geolocation";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   const [
     {
-      coordinates: { latitude, longitude }
+      coordinates: { latitude, longitude },
     },
-    dispatchLocationAction
+    dispatchLocationAction,
   ] = useContext(LocationContext);
 
-  const { latitude: newLatitude, longitude: newLongitude } = usePosition(true);
+  const { latitude: newLatitude, longitude: newLongitude } = useGeolocation();
 
   useEffect(() => {
     if (newLatitude !== latitude || newLongitude !== longitude) {
@@ -29,31 +28,11 @@ function App() {
   }, [latitude, longitude, newLatitude, newLongitude, dispatchLocationAction]);
 
   return (
-    <Switch>
-      <Route exact path="/" component={BusStopList} />
-      <Route exact path="/:id/departures" component={DeparturesBoard} />
-      <Route
-        render={() => (
-          <Grid align="left">
-            <GridCell phone={4} tablet={8} desktop={12}>
-              <Typography
-                use="headline6"
-                tag="h1"
-                theme="textPrimaryOnBackground"
-                style={{
-                  margin: "0",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis"
-                }}
-              >
-                No such route configured
-              </Typography>
-            </GridCell>
-          </Grid>
-        )}
-      />
-    </Switch>
+    <Routes>
+      <Route exact path="/" element={<BusStopList />} />
+      <Route exact path="/:id/departures" element={<DeparturesBoard />} />
+      <Route path="*" element={<UnknownRoute />} />
+    </Routes>
   );
 }
 

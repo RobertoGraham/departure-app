@@ -9,7 +9,7 @@ import {
   ListItem,
   ListItemText,
   ListItemPrimaryText,
-  ListItemSecondaryText
+  ListItemSecondaryText,
 } from "@rmwc/list";
 import "@rmwc/list/styles";
 
@@ -24,7 +24,7 @@ function DepartureListItem({ line, operator, busStopDepartures }) {
           style={{
             whiteSpace: "wrap",
             overflow: "hidden",
-            textOverflow: "ellipsis"
+            textOverflow: "ellipsis",
           }}
         >
           {line}
@@ -37,7 +37,7 @@ function DepartureListItem({ line, operator, busStopDepartures }) {
             marginTop: "-1rem",
             whiteSpace: "wrap",
             overflow: "hidden",
-            textOverflow: "ellipsis"
+            textOverflow: "ellipsis",
           }}
         >
           {operator}
@@ -45,7 +45,7 @@ function DepartureListItem({ line, operator, busStopDepartures }) {
       </div>
       <ListDivider />
       <List twoLine>
-        {busStopDepartures.map(busStopDeparture => {
+        {busStopDepartures.map((busStopDeparture) => {
           const { epochSecond, destination } = busStopDeparture;
           const timeString = new Date(1000 * epochSecond).toLocaleTimeString();
 

@@ -54,7 +54,7 @@ function DeparturesBoard() {
   const subtitleText = busStop ? busStop.locality : "";
 
   return (
-    <React.Fragment>
+    <>
       <header style={{ padding: "0 1rem", textAlign: "center" }}>
         <Typography
           use="headline6"
@@ -82,12 +82,8 @@ function DeparturesBoard() {
           {subtitleText}
         </Typography>
       </header>
-      {busStop ? (
-        <DepartureList key={busStop.id} busStopId={busStop.id} />
-      ) : (
-        <React.Fragment />
-      )}
-    </React.Fragment>
+      {busStop && <DepartureList key={busStop.id} busStopId={busStop.id} />}
+    </>
   );
 }
 
