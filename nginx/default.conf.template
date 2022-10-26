@@ -24,6 +24,7 @@ server {
         try_files $uri $uri/ /index.html;
     }
     location /api {
-        proxy_pass ${DEPARTURE_API_URL}/;
+        rewrite ^/api/(.*) /$1 break;
+        proxy_pass ${DEPARTURE_API_URL};
     }
 }
