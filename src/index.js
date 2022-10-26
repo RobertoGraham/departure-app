@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./style/index.css";
 import App from "./component/App";
 import { ThemeProvider } from "@rmwc/theme";
-import '@rmwc/theme/styles';
+import "@rmwc/theme/styles";
 import { BusStopDepartureProvider } from "./provider/BusStopDepartureProvider";
 import { BrowserRouter } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
@@ -40,7 +40,7 @@ ReactDOM.render(
               textSecondaryOnDark: "rgba(255, 255, 255, 0.7)",
               textHintOnDark: "rgba(255, 255, 255, 0.5)",
               textDisabledOnDark: "rgba(255, 255, 255, 0.5)",
-              textIconOnDark: "rgba(255, 255, 255, 0.5)"
+              textIconOnDark: "rgba(255, 255, 255, 0.5)",
             }}
           >
             <App />
