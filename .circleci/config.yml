@@ -46,7 +46,7 @@ jobs:
       - run: |
           curl -sSfX POST \
           -o /dev/null \
-          -d '{"branch":"master","parameters":{"application":"departure-api","commit-hash":"'"$CIRCLE_SHA1"'","job":"<< parameters.job >>"}}' \
+          -d '{"branch":"master","parameters":{"application":"departure-app","commit-hash":"'"$CIRCLE_SHA1"'","job":"<< parameters.job >>"}}' \
           -H "Content-Type:application/json" \
           -H "Circle-Token:$CIRCLE_TOKEN" \
           https://circleci.com/api/v2/project/gh/RobertoGraham/departure-infra/pipeline
