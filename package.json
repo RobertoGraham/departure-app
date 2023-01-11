@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@rmwc/card": "^8.0.3",
+    "@rmwc/card": "^8.0.4",
     "@rmwc/grid": "^8.0.3",
     "@rmwc/list": "^8.0.3",
     "@rmwc/theme": "^8.0.3",
