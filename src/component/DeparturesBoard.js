@@ -58,7 +58,7 @@ function DeparturesBoard() {
       <header style={{ padding: "0 1rem", textAlign: "center" }}>
         <Typography
           use="headline6"
-          tag="h2"
+          tag="h1"
           theme="textPrimaryOnBackground"
           style={{
             whiteSpace: "wrap",
@@ -70,7 +70,7 @@ function DeparturesBoard() {
         </Typography>
         <Typography
           use="subtitle2"
-          tag="h3"
+          tag="h2"
           theme="textSecondaryOnBackground"
           style={{
             marginTop: "-1rem",

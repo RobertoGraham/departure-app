@@ -19,7 +19,7 @@ function DepartureListItem({ line, operator, busStopDepartures }) {
       <div style={{ padding: "0 1rem" }}>
         <Typography
           use="headline6"
-          tag="h2"
+          tag="h3"
           theme="textPrimaryOnBackground"
           style={{
             whiteSpace: "wrap",
@@ -31,7 +31,7 @@ function DepartureListItem({ line, operator, busStopDepartures }) {
         </Typography>
         <Typography
           use="subtitle2"
-          tag="h3"
+          tag="h4"
           theme="textSecondaryOnBackground"
           style={{
             marginTop: "-1rem",
