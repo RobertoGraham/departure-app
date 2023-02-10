@@ -5,7 +5,7 @@
   "dependencies": {
     "@rmwc/card": "^8.0.4",
     "@rmwc/grid": "^8.0.4",
-    "@rmwc/list": "^8.0.4",
+    "@rmwc/list": "^8.0.5",
     "@rmwc/theme": "^8.0.4",
     "@rmwc/typography": "^8.0.4",
     "geolib": "^3.3.3",
