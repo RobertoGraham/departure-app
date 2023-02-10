@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@rmwc/card": "^8.0.4",
-    "@rmwc/grid": "^8.0.4",
+    "@rmwc/grid": "^8.0.5",
     "@rmwc/list": "^8.0.4",
     "@rmwc/theme": "^8.0.4",
     "@rmwc/typography": "^8.0.4",
